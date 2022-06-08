@@ -1,9 +1,12 @@
 package com.geniobits.besocialapp;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
         newUserButton = findViewById(R.id.textButton);
 
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
+        usersList = new ArrayList<>();
 
-        //getListOfUsers();
+        getListOfUsers();
 
         newUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,13 +64,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String userEmailID = editText.getText().toString();
-//                for (int i = 0; i < usersList.size(); i++)  {
-//                    if(userEmailID.equals(usersList.get(i).emailID))
-//
-//                }
-                Snackbar.make(findViewById(R.id.loginPage),
-                        "Email button working", Snackbar.LENGTH_SHORT).show();
+                int flag = 0;
+                for (int i = 0; i < usersList.size(); i++)  {
+                    if(userEmailID.equals(usersList.get(i).getEmailID())) {
+                        flag = i;
+                        break;
+                    }
+                }
 
+                if(flag != 0)   {
+                    goToListOfPostPage(usersList.get(flag));
+                }
+                else    {
+                    Snackbar.make(findViewById(R.id.loginPage),
+                            "Please try again!", Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -95,7 +108,16 @@ public class MainActivity extends AppCompatActivity {
                                 String gender = array.getString("gender");
                                 String status = array.getString("status");
 
-                                usersList.add(new UserInfo(id, name, email, gender, status));
+                                UserInfo userInfo = new UserInfo(id, name, email, gender, status);
+                                userInfo.setUserID(id);
+                                userInfo.setUserName(name);
+                                userInfo.setEmailID(email);
+                                userInfo.setGender(email);
+                                userInfo.setStatus(status);
+
+                                Log.i(TAG, "onResponse: "+userInfo.getEmailID());
+
+                                usersList.add(userInfo);
                                 if(i == 19)   {
                                     Snackbar.make(findViewById(R.id.loginPage),
                                             "data acquired", Snackbar.LENGTH_SHORT).show();
@@ -114,6 +136,12 @@ public class MainActivity extends AppCompatActivity {
 
         mQueue.add(request);
 
+    }
+
+    public void goToListOfPostPage(UserInfo userInfo)    {
+        Intent intent = new Intent(this, ListOfPost.class);
+        intent.putExtra("userInfo", userInfo);
+        startActivity(intent);
     }
 
 }
