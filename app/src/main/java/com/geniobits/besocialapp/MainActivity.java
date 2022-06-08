@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
 
-        getListOfUsers();
+        //getListOfUsers();
 
         newUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String userEmailID = editText.getText().toString();
-                for (int i = 0; i < usersList.size(); i++)  {
-                    if(userEmailID.equals(usersList.get(i).emailID))
-                        Snackbar.make(findViewById(R.id.loginPage),
-                                "Email logged in!", Snackbar.LENGTH_SHORT).show();
-                }
+//                for (int i = 0; i < usersList.size(); i++)  {
+//                    if(userEmailID.equals(usersList.get(i).emailID))
+//
+//                }
+                Snackbar.make(findViewById(R.id.loginPage),
+                        "Email button working", Snackbar.LENGTH_SHORT).show();
 
             }
         });
